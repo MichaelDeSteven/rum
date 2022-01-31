@@ -2,7 +2,11 @@ package rum
 
 import (
 	"net/http"
+	"sync"
 )
+
+var once sync.Once
+var internalEngine *Engine
 
 // HandlerFunc defines the handler used by gin middleware as return value.
 type HandlerFunc func(*Context)
@@ -30,6 +34,8 @@ type Engine struct {
 	addr string
 
 	trees
+
+	group *RouterGroup
 }
 
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -50,38 +56,57 @@ func (e *Engine) addRoute(method, path string, handlers HandlersChain) {
 	root.addRoute(path, handlers)
 }
 
-func (engine *Engine) GET(path string, handlers HandlersChain) {
-	engine.addRoute(http.MethodGet, path, handlers)
+func (e *Engine) Use(middleware ...HandlerFunc) IRoutes {
+	return e.group.Use(middleware...)
 }
 
-func (engine *Engine) POST(path string, handlers HandlersChain) {
-	engine.addRoute(http.MethodPost, path, handlers)
+func (e *Engine) Group(relativePath string, handlers ...HandlerFunc) *RouterGroup {
+	return e.group.Group(relativePath, handlers...)
 }
 
-func (engine *Engine) DELETE(path string, handlers HandlersChain) {
-	engine.addRoute(http.MethodDelete, path, handlers)
+func (e *Engine) GET(path string, handlers ...HandlerFunc) IRoutes {
+	return e.group.GET(path, handlers...)
 }
 
-func (engine *Engine) PUT(path string, handlers HandlersChain) {
-	engine.addRoute(http.MethodPut, path, handlers)
+func (e *Engine) POST(path string, handlers ...HandlerFunc) IRoutes {
+	return e.group.POST(path, handlers...)
 }
 
-func (engine *Engine) HEAD(path string, handlers HandlersChain) {
-	engine.addRoute(http.MethodHead, path, handlers)
+func (e *Engine) DELETE(path string, handlers ...HandlerFunc) IRoutes {
+	return e.group.DELETE(path, handlers...)
+}
+
+func (e *Engine) PUT(path string, handlers ...HandlerFunc) IRoutes {
+	return e.group.PUT(path, handlers...)
+}
+
+func (e *Engine) HEAD(path string, handlers ...HandlerFunc) IRoutes {
+	return e.group.HEAD(path, handlers...)
+}
+
+func (e *Engine) Handle(method, path string, handlers ...HandlerFunc) IRoutes {
+	return e.group.Handle(method, path, handlers...)
 }
 
 func New(addr string) *Engine {
-	return &Engine{
+	engine := &Engine{
 		addr:  addr,
 		trees: make(trees, 0),
+		group: &RouterGroup{
+			BasePath: "/",
+			root:     true,
+		},
 	}
+	engine.group.engine = engine
+	return engine
 }
 
+// Deafult returns an Engine instance with the middleware
 func Deafult() *Engine {
-	return &Engine{
-		addr:  ":9678",
-		trees: make(trees, 0),
-	}
+	once.Do(func() {
+		internalEngine = New("9678")
+	})
+	return internalEngine
 }
 
 func (e *Engine) Start() {
@@ -89,13 +114,15 @@ func (e *Engine) Start() {
 }
 
 func (e *Engine) handle(c *Context) {
-	handlers, params := e.trees.get(c.Method).getValue(c.Path, &Params{})
-	if handlers == nil {
+	tree := e.trees.get(c.Method)
+	handlers, params := tree.getValue(c.Path, &c.Params)
+	c.HandlersChain = handlers
+	if params != nil {
+		c.Params = *params
+	}
+	if c.HandlersChain == nil {
 		c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
 	} else {
-		if params != nil {
-			c.Params = *params
-		}
-		handlers[0](c)
+		c.Next()
 	}
 }

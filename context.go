@@ -25,6 +25,19 @@ type Context struct {
 	Method string
 
 	StatusCode int
+
+	index int8
+
+	HandlersChain
+}
+
+// Next() used in middleware
+func (c *Context) Next() {
+	c.index++
+	for c.index < int8(len(c.HandlersChain)) {
+		c.HandlersChain[c.index](c)
+		c.index++
+	}
 }
 
 func newContext(w http.ResponseWriter, req *http.Request) *Context {
@@ -33,6 +46,8 @@ func newContext(w http.ResponseWriter, req *http.Request) *Context {
 		Request: req,
 		Path:    req.URL.Path,
 		Method:  req.Method,
+		Params:  Params{},
+		index:   -1,
 	}
 }
 
