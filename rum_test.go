@@ -15,7 +15,7 @@ type header struct {
 
 func TestCreateEngine(t *testing.T) {
 	router := Deafult()
-	assert.Equal(t, "9678", router.addr)
+	assert.Equal(t, ":9678", router.addr)
 }
 
 // PerformRequest for testing router.

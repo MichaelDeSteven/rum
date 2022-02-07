@@ -118,7 +118,7 @@ func New(addr string) *Engine {
 // Deafult returns an Engine instance with the middleware
 func Deafult() *Engine {
 	once.Do(func() {
-		internalEngine = New("9678")
+		internalEngine = New(":9678")
 	})
 	return internalEngine
 }
