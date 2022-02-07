@@ -15,3 +15,7 @@ GOTEST              := $(GO) test -v --count=1 --parallel=1 -p=
 
 tree:
 $(GOTEST) ./tree_test.go -run 1
+$(GOTEST) ./routergroup_test.go -run 1
+$(GOTEST) ./middleware_test.go -run 1
+$(GOTEST) ./binding/binding_test -run 1
+$(GOTEST) ./context_test.go -run 1

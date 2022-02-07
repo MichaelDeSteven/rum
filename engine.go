@@ -36,11 +36,19 @@ type Engine struct {
 	trees
 
 	group *RouterGroup
+
+	pool sync.Pool
+}
+
+func (engine *Engine) allocateContext() *Context {
+	return &Context{}
 }
 
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	c := newContext(w, r)
+	c := e.pool.Get().(*Context)
+	c.reset(w, r)
 	e.handle(c)
+	e.pool.Put(c)
 }
 
 func (e *Engine) addRoute(method, path string, handlers HandlersChain) {
@@ -98,6 +106,12 @@ func New(addr string) *Engine {
 		},
 	}
 	engine.group.engine = engine
+	engine.pool.New = func() interface{} {
+		return &Context{
+			Params: Params{},
+			index:  -1,
+		}
+	}
 	return engine
 }
 

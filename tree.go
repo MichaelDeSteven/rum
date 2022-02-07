@@ -18,7 +18,7 @@ type node struct {
 	handlers     HandlersChain
 }
 
-func findWildcard(path string) (wilcard string, i int, valid bool) {
+func findWildcard(path string) (wildcard string, i int, valid bool) {
 	// Find start
 	for start, c := range []byte(path) {
 		// A wildcard starts with ':' (param) or '*' (catch-all)
@@ -48,7 +48,7 @@ func min(a, b int) int {
 	return b
 }
 
-// addChild will add a child node, keeping wildcards at the end
+// addChild will add a child node, keeping wildcardChild at the end
 func (n *node) addChild(child *node) {
 	if n.hasWildChild && len(n.child) > 0 {
 		wildcardChild := n.getWildChild()
@@ -161,7 +161,7 @@ func (n *node) insertChild(path, fullPath string, handlers HandlersChain) {
 			break
 		}
 
-		// The wildcard name must only contain one ':' or '*' charactor
+		// The wildcard name must only contain one ':' or '*' character
 		if !valid {
 			panic("only one wildcard per path segment is allowed, has: '" +
 				wildcard + "' in path '" + fullPath + "'")
@@ -169,7 +169,7 @@ func (n *node) insertChild(path, fullPath string, handlers HandlersChain) {
 
 		// check if the wildcard has a name
 		if len(wildcard) < 2 {
-			panic("wildcards must be named with a non-empty name in path '" + fullPath + "'")
+			panic("wildcard must be named with a non-empty name in path '" + fullPath + "'")
 		}
 
 		if wildcard[0] == ':' {

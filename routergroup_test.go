@@ -7,7 +7,7 @@ import (
 )
 
 func TestRouterGroupBasic(t *testing.T) {
-	router := Deafult()
+	router := New("9678")
 	group := router.Group("/hola", func(c *Context) {})
 	group.Use(func(c *Context) {})
 

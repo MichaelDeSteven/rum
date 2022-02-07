@@ -1,8 +1,6 @@
 package rum
 
 import (
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -17,22 +15,7 @@ type header struct {
 
 func TestCreateEngine(t *testing.T) {
 	router := Deafult()
-	assert.Equal(t, ":9999", router.addr)
-}
-
-func TestMethodGet(t *testing.T) {
-	url := "./testdata/template/hello.tmpl"
-	e := Deafult()
-	e.Start()
-	e.GET("/test", func(c *Context) {})
-
-	res, err := http.Get(fmt.Sprintf("%s/test", url))
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("%+v\n", res)
-	resp, _ := ioutil.ReadAll(res.Body)
-	assert.Equal(t, "<h1>Hello world</h1>", string(resp))
+	assert.Equal(t, "9678", router.addr)
 }
 
 // PerformRequest for testing router.
