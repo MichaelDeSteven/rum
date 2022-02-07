@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/MichaelDeSteven/rum/binding"
@@ -174,6 +175,7 @@ func TestContextFormFile(t *testing.T) {
 	}
 
 	assert.NoError(t, c.SaveUploadedFile(f, "test"))
+	clearUploadedFile("test")
 }
 
 func TestContextMultipartForm(t *testing.T) {
@@ -195,6 +197,7 @@ func TestContextMultipartForm(t *testing.T) {
 	}
 
 	assert.NoError(t, c.SaveUploadedFile(f.File["file"][0], "test"))
+	clearUploadedFile("test")
 }
 
 func TestSaveUploadedOpenFailed(t *testing.T) {
@@ -210,6 +213,7 @@ func TestSaveUploadedOpenFailed(t *testing.T) {
 		Filename: "file",
 	}
 	assert.Error(t, c.SaveUploadedFile(f, "test"))
+	clearUploadedFile("test")
 }
 
 func TestSaveUploadedCreateFailed(t *testing.T) {
@@ -230,4 +234,10 @@ func TestSaveUploadedCreateFailed(t *testing.T) {
 	}
 
 	assert.Error(t, c.SaveUploadedFile(f, "/"))
+}
+
+// clear current path file
+// If there is an error, just ingore it
+func clearUploadedFile(filename string) {
+	os.Remove(filename)
 }
