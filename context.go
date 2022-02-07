@@ -8,8 +8,9 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-	"rum/binding"
 	"sync"
+
+	"github.com/MichaelDeSteven/rum/binding"
 )
 
 // BodyKey indicates a default body bytes key.

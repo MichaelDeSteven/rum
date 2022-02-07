@@ -9,10 +9,11 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"rum/internal/bytesconv"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/MichaelDeSteven/rum/internal/bytesconv"
 )
 
 var (

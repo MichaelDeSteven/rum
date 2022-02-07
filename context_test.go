@@ -9,9 +9,9 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
-	"rum/binding"
 	"testing"
 
+	"github.com/MichaelDeSteven/rum/binding"
 	"github.com/stretchr/testify/assert"
 )
 

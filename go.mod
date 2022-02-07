@@ -1,4 +1,4 @@
-module rum
+module github.com/MichaelDeSteven/rum
 
 go 1.16
 
