@@ -17,7 +17,7 @@ import (
 )
 
 func CreateTestContext(w http.ResponseWriter) (c *Context, r *Engine) {
-	r = Deafult()
+	r = Default()
 	c = r.allocateContext()
 	c.reset(w, nil)
 	return

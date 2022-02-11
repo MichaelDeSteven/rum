@@ -14,7 +14,7 @@ type header struct {
 }
 
 func TestCreateEngine(t *testing.T) {
-	router := Deafult()
+	router := Default()
 	assert.Equal(t, ":9678", router.addr)
 }
 

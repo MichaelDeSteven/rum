@@ -9,7 +9,7 @@ import (
 
 func TestMiddlewareGeneralCase(t *testing.T) {
 	signature := ""
-	router := Deafult()
+	router := Default()
 	router.Use(func(c *Context) {
 		signature += "A"
 		c.Next()
