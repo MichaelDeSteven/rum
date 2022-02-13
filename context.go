@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -18,6 +19,9 @@ const BodyKey = "BodyKey"
 
 // Multipart default size
 const defaultMultipartMemory = 32 << 20 // 32 MB
+
+// Abort inx
+const abortInx = math.MaxInt8 >> 1
 
 // Content-Type MIME of the most common data formats.
 const (
@@ -84,6 +88,10 @@ func (c *Context) Next() {
 		c.HandlersChain[c.index](c)
 		c.index++
 	}
+}
+
+func (c *Context) Abort() {
+	c.index = abortInx
 }
 
 // Set is used to store a new key/value pair exclusively for this context.
