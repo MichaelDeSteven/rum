@@ -129,14 +129,22 @@ func (e *Engine) Start() {
 
 func (e *Engine) handle(c *Context) {
 	tree := e.trees.get(c.Method)
+	if tree == nil {
+		NotFound(c)
+		return
+	}
 	handlers, params := tree.getValue(c.Path, &c.Params)
 	c.HandlersChain = handlers
 	if params != nil {
 		c.Params = *params
 	}
 	if c.HandlersChain == nil {
-		c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+		NotFound(c)
 	} else {
 		c.Next()
 	}
+}
+
+func NotFound(c *Context) {
+	c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
 }

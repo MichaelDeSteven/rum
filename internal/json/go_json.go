@@ -10,14 +10,14 @@ package json
 import json "github.com/goccy/go-json"
 
 var (
-	// Marshal is exported by gin/json package.
+	// Marshal is exported by rum/json package.
 	Marshal = json.Marshal
-	// Unmarshal is exported by gin/json package.
+	// Unmarshal is exported by rum/json package.
 	Unmarshal = json.Unmarshal
-	// MarshalIndent is exported by gin/json package.
+	// MarshalIndent is exported by rum/json package.
 	MarshalIndent = json.MarshalIndent
-	// NewDecoder is exported by gin/json package.
+	// NewDecoder is exported by rum/json package.
 	NewDecoder = json.NewDecoder
-	// NewEncoder is exported by gin/json package.
+	// NewEncoder is exported by rum/json package.
 	NewEncoder = json.NewEncoder
 )

@@ -241,3 +241,13 @@ func TestSaveUploadedCreateFailed(t *testing.T) {
 func clearUploadedFile(filename string) {
 	os.Remove(filename)
 }
+
+func TestPath404NotFound(t *testing.T) {
+	router := Default()
+	// RUN
+	w := PerformRequest(router, "GET", "/404")
+
+	// TEST
+	assert.Equal(t, http.StatusNotFound, w.Code)
+	assert.Equal(t, "404 NOT FOUND: /404\n", w.Body.String())
+}
