@@ -68,6 +68,20 @@ type Context struct {
 	Errors errorMsgs
 }
 
+func (ps Params) Get(name string) (string, bool) {
+	for _, entry := range ps {
+		if entry.Key == name {
+			return entry.Value, true
+		}
+	}
+	return "", false
+}
+
+func (c *Context) Param(name string) string {
+	v, _ := c.Params.Get(name)
+	return v
+}
+
 func (c *Context) reset(w http.ResponseWriter, r *http.Request) {
 	c.Writer = w
 	if r != nil {

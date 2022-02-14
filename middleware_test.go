@@ -32,7 +32,7 @@ func TestMiddlewareGeneralCase(t *testing.T) {
 
 func TestMiddlewareAbort(t *testing.T) {
 	signature := ""
-	router := Default()
+	router := New("9678")
 	router.Use(func(c *Context) {
 		signature += "A"
 		c.Next()

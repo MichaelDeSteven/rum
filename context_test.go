@@ -251,3 +251,18 @@ func TestPath404NotFound(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Equal(t, "404 NOT FOUND: /404\n", w.Body.String())
 }
+
+func TestGetParams(t *testing.T) {
+	router := Default()
+	router.Use(func(c *Context) {
+		// TEST
+		assert.Equal(t, "pp", c.Param("param"))
+		assert.Equal(t, "127072", c.Param("uid"))
+		assert.Equal(t, "", c.Param("uidd"))
+	})
+	router.addRoute("GET", "/user/:param/:uid", fakeHandler(fakeHandlerValue))
+
+	w := PerformRequest(router, "GET", "/user/pp/127072")
+	// TEST
+	assert.Equal(t, http.StatusOK, w.Code)
+}

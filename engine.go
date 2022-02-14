@@ -7,6 +7,7 @@ import (
 
 var once sync.Once
 var internalEngine *Engine
+var maxParams = 20
 
 // HandlerFunc defines the handler used by gin middleware as return value.
 type HandlerFunc func(*Context)
@@ -41,7 +42,8 @@ type Engine struct {
 }
 
 func (engine *Engine) allocateContext() *Context {
-	return &Context{}
+	v := make(Params, 0, maxParams)
+	return &Context{Params: v, index: -1}
 }
 
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -107,10 +109,7 @@ func New(addr string) *Engine {
 	}
 	engine.group.engine = engine
 	engine.pool.New = func() interface{} {
-		return &Context{
-			Params: Params{},
-			index:  -1,
-		}
+		return engine.allocateContext()
 	}
 	return engine
 }
